@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cipherresource.project.system.mmk.mapper.TMmkMapper">
+    
+    <resultMap type="TMmk" id="TMmkResult">
+        <result property="id"    column="id"    />
+        <result property="mmkid"    column="mmkid"    />
+        <result property="appid"    column="appid"    />
+        <result property="status"    column="status"    />
+        <result property="version"    column="version"    />
+        <result property="createdate"    column="createdate"    />
+        <result property="alg"    column="alg"    />
+        <result property="keyvalue"    column="keyvalue"    />
+        <result property="isbind"    column="isbind"    />
+        <association property="tapplication" javaType="TApplication">
+            <result property="appname" column="appname"></result>
+            <result property="ownerid" column="ownerid"></result>
+ 		</association>
+    </resultMap>
+
+    <sql id="selectTMmkVo">
+        select a.id, a.mmkid, a.appid, b.appname, a.status, a.version, a.createdate, a.alg, a.keyvalue, a.isbind from 
+        t_mmk a left join t_application b on a.appid=b.appid
+    </sql>
+    
+    <sql id="selectTMmkHistoryVo">
+        select a.id, a.mmkid, a.appid, b.appname, a.status, a.version, a.createdate, a.alg, a.keyvalue, a.isbind from 
+        t_mmk_history a left join t_application b on a.appid=b.appid
+    </sql>
+    
+    <sql id="TMmkHistoryExist">
+        select count(*) from t_mmk_history
+    </sql>
+
+    <select id="selectTMmkList" parameterType="TMmk" resultMap="TMmkResult">
+        <include refid="selectTMmkVo"/>
+        <where>  
+            <if test="mmkid != null  and mmkid != ''"> and mmkid = #{mmkid}</if>
+            <if test="appid != null  and appid != ''"> and appid = #{appid}</if>
+            <if test="status != null "> and status = #{status}</if>
+            <if test="version != null "> and version = #{version}</if>
+            <if test="createdate != null "> and createdate = #{createdate}</if>
+            <if test="alg != null "> and alg = #{alg}</if>
+            <if test="keyvalue != null "> and keyvalue = #{keyvalue}</if>
+        </where>
+    </select>
+     <select id="selectIds" parameterType="hashmap" resultMap="TMmkResult">
+        <include refid="selectTMmkVo"/>
+        where a.id BETWEEN #{begin} and  #{end} 
+    </select>
+    <select id="selectTMmkListByCsappid" parameterType="String" resultMap="TMmkResult">
+        <include refid="selectTMmkVo"/>
+        where b.ownerid = #{ownerid} and a.appid != '' and a.status = 1 and a.isbind = 1
+    </select>
+    
+    <select id="selectTMmkListByCsappidCluster" parameterType="String" resultMap="TMmkResult">
+        SELECT a.* FROM t_mmk a 
+        JOIN t_application b on a.appid = b.appid 
+        JOIN t_application c on b.ownerid = c.appid 
+        WHERE c.ownerid = #{ownerid} and a.appid != '' and a.status = 1 and a.isbind = 1
+    </select>
+
+    <select id="tMmkHistoryExistById" parameterType="Long" resultType="Integer">
+        <include refid="TMmkHistoryExist"/>
+        where id = #{id}
+    </select>
+    
+    <select id="selectTMmkById" parameterType="Long" resultMap="TMmkResult">
+        <include refid="selectTMmkVo"/>
+        where a.id = #{id}
+    </select>
+    
+    <select id="selectTMmkHistoryById" parameterType="Long" resultMap="TMmkResult">
+        <include refid="selectTMmkHistoryVo"/>
+        where a.id = #{id}
+    </select>
+    
+    <select id="selectTMmkByMmkid" parameterType="String" resultMap="TMmkResult">
+        <include refid="selectTMmkVo"/>
+        where a.mmkid = #{a.mmkid} 
+    </select>  
+    
+    <select id="selectTMmkByAppId" parameterType="String" resultMap="TMmkResult">
+        <include refid="selectTMmkVo"/>
+        where a.appid = #{a.appid} limit 1
+    </select>
+    
+    <select id="selectTMmkUnbind" resultType="Long">
+    	select ifnull(min(id), (select ifnull(min(id), -1) from t_mmk where appid = '' and status = 1 and isbind = 0)) from t_mmk where appid = #{appid} and status = 1
+    </select>
+        
+    <insert id="insertTMmk" parameterType="TMmk" useGeneratedKeys="true" keyProperty="id">
+        insert into t_mmk
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+        	<if test="id != null  and id != ''">id,</if>
+            <if test="mmkid != null  and mmkid != ''">mmkid,</if>
+            <if test="appid != null  and appid != ''">appid,</if>
+            <if test="status != null ">status,</if>
+            <if test="version != null ">version,</if>
+            <if test="createdate != null ">createdate,</if>
+            <if test="alg != null ">alg,</if>
+            <if test="keyvalue != null ">keyvalue,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+        	<if test="id != null  and id != ''">#{id},</if>
+            <if test="mmkid != null  and mmkid != ''">#{mmkid},</if>
+            <if test="appid != null  and appid != ''">#{appid},</if>
+            <if test="status != null ">#{status},</if>
+            <if test="version != null ">#{version},</if>
+            <if test="createdate != null ">#{createdate},</if>
+            <if test="alg != null ">#{alg},</if>
+            <if test="keyvalue != null ">#{keyvalue},</if>
+         </trim>
+    </insert>
+    
+    <insert id="insertTMmkHistory" parameterType="TMmk" useGeneratedKeys="true" keyProperty="id">
+        insert into t_mmk_history
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+        	<if test="id != null  and id != ''">id,</if>
+            <if test="mmkid != null  and mmkid != ''">mmkid,</if>
+            <if test="appid != null  and appid != ''">appid,</if>
+            <if test="status != null ">status,</if>
+            <if test="version != null ">version,</if>
+            <if test="createdate != null ">createdate,</if>
+            <if test="alg != null ">alg,</if>
+            <if test="keyvalue != null ">keyvalue,</if>
+            <if test="isbind != null ">isbind,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+        	<if test="id != null  and id != ''">#{id},</if>
+            <if test="mmkid != null  and mmkid != ''">#{mmkid},</if>
+            <if test="appid != null  and appid != ''">#{appid},</if>
+            <if test="status != null ">#{status},</if>
+            <if test="version != null ">#{version},</if>
+            <if test="createdate != null ">#{createdate},</if>
+            <if test="alg != null ">#{alg},</if>
+            <if test="keyvalue != null ">#{keyvalue},</if>
+            <if test="isbind != null ">#{isbind},</if>
+         </trim>
+    </insert>
+
+    <update id="updateTMmk" parameterType="TMmk">
+        update t_mmk
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="mmkid != null  and mmkid != ''">mmkid = #{mmkid},</if>
+            <if test="appid != null  ">appid = #{appid},</if>
+            <if test="status != null ">status = #{status},</if>
+            <if test="version != null ">version = #{version},</if>
+            <if test="createdate != null ">createdate = #{createdate},</if>
+            <if test="alg != null ">alg = #{alg},</if>
+            <if test="keyvalue != null ">keyvalue = #{keyvalue},</if>
+            <if test="isbind != null ">isbind = #{isbind},</if>
+        </trim>
+        where id = #{id}
+    </update>
+    
+    <update id="updateTMmkBind" parameterType="TMmk">
+        update t_mmk
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="appid != null and appid != ''">appid = #{appid},</if>
+            t_mmk.isbind = 1,
+        </trim>
+        where id = #{id}
+    </update>
+    
+    <update id="updateTMmkHistory" parameterType="TMmk">
+        update t_mmk_history
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="mmkid != null  and mmkid != ''">mmkid = #{mmkid},</if>
+            <if test="appid != null  ">appid = #{appid},</if>
+            <if test="status != null ">status = #{status},</if>
+            <if test="version != null ">version = #{version},</if>
+            <if test="createdate != null ">createdate = #{createdate},</if>
+            <if test="alg != null ">alg = #{alg},</if>
+            <if test="keyvalue != null ">keyvalue = #{keyvalue},</if>
+            <if test="isbind != null ">isbind = #{isbind},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteTMmkById" parameterType="Long">
+        delete from t_mmk where id = #{id}
+    </delete>
+
+    <delete id="deleteTMmkByIds" parameterType="String">
+        delete from t_mmk where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

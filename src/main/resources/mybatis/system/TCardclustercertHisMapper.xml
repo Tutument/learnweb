@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper
+	namespace="com.cipherresource.project.system.cardclustercerthis.mapper.TCardclustercertHisMapper">
+
+	<resultMap type="TCardclustercertHis"
+		id="TCardclustercertHisResult">
+		<result property="id" column="id" />
+		<result property="clusterid" column="clusterid" />
+		<result property="status" column="status" />
+		<result property="version" column="version" />
+		<result property="createdate" column="createdate" />
+		<result property="certsn" column="certsn" />
+		<result property="notvaliddate" column="notValidDate" />
+		<result property="pubkey" column="pubkey" />
+		<result property="cert" column="cert" />
+		<result property="conindex" column="conindex" />
+	</resultMap>
+
+	<sql id="selectTCardclustercertHisVo">
+		select id, clusterid, status, version, createdate, certsn, notValidDate,
+		pubkey, cert, conindex from t_cardclustercert_his
+	</sql>
+
+	<select id="selectTCardclustercertHisList"
+		parameterType="TCardclustercertHis"
+		resultMap="TCardclustercertHisResult">
+		<include refid="selectTCardclustercertHisVo" />
+		<where>
+			<if test="status != null "> and status = #{status}</if>
+			<if test="version != null  and version != ''"> and version = #{version}</if>
+			<if test="createdate != null "> and createdate = #{createdate}</if>
+			<if test="certsn != null  and certsn != ''"> and certsn = #{certsn}</if>
+			<if test="notvaliddate != null "> and notValidDate = #{notvaliddate}</if>
+			<if test="pubkey != null "> and pubkey = #{pubkey}</if>
+			<if test="cert != null  and cert != ''"> and cert = #{cert}</if>
+			<if test="conindex != null "> and conindex = #{conindex}</if>
+		</where>
+	</select>
+	<select id="getTCardclustercertHisList"
+		parameterType="hashmap"
+		resultMap="TCardclustercertHisResult">
+		<include refid="selectTCardclustercertHisVo" />
+		<where>
+			<if test="status != null "> and status = #{status}</if>
+			<if test="version != null  and version != ''"> and version = #{version}</if>
+			<if test="beginTime != null and beginTime != ''"><!-- 开始时间检索 -->
+				and date_format(createdate,'%y%m%d %H:%i:') &gt;=
+				date_format(#{beginTime},'%y%m%d %H:%i:')
+			</if>
+			<if test="endTime != null and endTime != ''"><!-- 结束时间检索 -->
+				and date_format(createdate,'%y%m%d %H:%i:') &lt;=
+				date_format(#{endTime},'%y%m%d %H:%i:')
+			</if>
+			<if test="certsn != null  and certsn != ''"> and certsn = #{certsn}</if>
+			<if test="notvaliddate != null "> and notValidDate = #{notvaliddate}</if>
+			<if test="pubkey != null "> and pubkey = #{pubkey}</if>
+			<if test="cert != null  and cert != ''"> and cert = #{cert}</if>
+			<if test="conindex != null "> and conindex = #{conindex}</if>
+		</where>
+	</select>
+	<select id="selectTCardclustercertHisById" parameterType="Long"
+		resultMap="TCardclustercertHisResult">
+		<include refid="selectTCardclustercertHisVo" />
+		where id = #{id}
+	</select>
+
+	<insert id="insertTCardclustercertHis"
+		parameterType="TCardclustercertHis" useGeneratedKeys="true"
+		keyProperty="id">
+		insert into t_cardclustercert_his
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="clusterid != null  and clusterid != ''">clusterid,</if>
+			<if test="status != null ">status,</if>
+			<if test="version != null  and version != ''">version,</if>
+			<if test="createdate != null ">createdate,</if>
+			<if test="certsn != null  and certsn != ''">certsn,</if>
+			<if test="notvaliddate != null ">notValidDate,</if>
+			<if test="pubkey != null ">pubkey,</if>
+			<if test="cert != null  and cert != ''">cert,</if>
+			<if test="conindex != null ">conindex,</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="clusterid != null  and clusterid != ''">#{clusterid},</if>
+			<if test="status != null ">#{status},</if>
+			<if test="version != null  and version != ''">#{version},</if>
+			<if test="createdate != null ">#{createdate},</if>
+			<if test="certsn != null  and certsn != ''">#{certsn},</if>
+			<if test="notvaliddate != null ">#{notvaliddate},</if>
+			<if test="pubkey != null ">#{pubkey},</if>
+			<if test="cert != null  and cert != ''">#{cert},</if>
+			<if test="conindex != null ">#{conindex},</if>
+		</trim>
+	</insert>
+
+	<update id="updateTCardclustercertHis"
+		parameterType="TCardclustercertHis">
+		update t_cardclustercert_his
+		<trim prefix="SET" suffixOverrides=",">
+			<if test="clusterid != null  and clusterid != ''">clusterid = #{clusterid},</if>
+			<if test="status != null ">status = #{status},</if>
+			<if test="version != null  and version != ''">version = #{version},</if>
+			<if test="createdate != null ">createdate = #{createdate},</if>
+			<if test="certsn != null  and certsn != ''">certsn = #{certsn},</if>
+			<if test="notvaliddate != null ">notValidDate = #{notvaliddate},</if>
+			<if test="pubkey != null ">pubkey = #{pubkey},</if>
+			<if test="cert != null  and cert != ''">cert = #{cert},</if>
+			<if test="conindex != null ">conindex = #{conindex},</if>
+		</trim>
+		where id = #{id}
+	</update>
+
+	<delete id="deleteTCardclustercertHisById" parameterType="Long">
+		delete from t_cardclustercert_his where id = #{id}
+	</delete>
+
+	<delete id="deleteTCardclustercertHisByIds"
+		parameterType="String">
+		delete from t_cardclustercert_his where id in
+		<foreach item="id" collection="array" open="(" separator=","
+			close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+</mapper>

@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cipherresource.project.system.log.mapper.TLogMapper">
+    
+    <resultMap type="TLog" id="TLogResult">
+        <result property="id"    column="id"    />
+        <result property="eventid"    column="eventid"    />
+        <result property="appid"    column="appid"    />
+        <result property="moduleid"    column="moduleid"    />
+        <result property="eventtype"    column="eventtype"    />
+        <result property="eventstate"    column="eventstate"    />
+        <result property="eventtime"    column="eventtime"    />
+        <result property="eventinfo"    column="eventinfo"    />
+    </resultMap>
+
+    <sql id="selectTLogVo">
+        select id, eventid, appid, moduleid, eventtype, eventstate, eventtime, eventinfo from t_log
+    </sql>
+
+    <select id="selectTLogList" parameterType="TLog" resultMap="TLogResult">
+        <include refid="selectTLogVo"/>
+        <where>  
+            <if test="eventid != null  and eventid != ''"> and eventid = #{eventid}</if>
+            <if test="appid != null  and appid != ''"> and appid = #{appid}</if>
+            <if test="moduleid != null  and moduleid != ''"> and moduleid = #{moduleid}</if>
+            <if test="eventtype != null "> and eventtype = #{eventtype}</if>
+            <if test="eventstate != null "> and eventstate = #{eventstate}</if>
+            <if test="eventtime != null "> and eventtime = #{eventtime}</if>
+            <if test="eventinfo != null  and eventinfo != ''"> and eventinfo = #{eventinfo}</if>
+        </where>
+    </select>
+    
+    <select id="selectTLogById" parameterType="Long" resultMap="TLogResult">
+        <include refid="selectTLogVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertTLog" parameterType="TLog" useGeneratedKeys="true" keyProperty="id">
+        insert into t_log
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="eventid != null  and eventid != ''">eventid,</if>
+            <if test="appid != null  and appid != ''">appid,</if>
+            <if test="moduleid != null  and moduleid != ''">moduleid,</if>
+            <if test="eventtype != null ">eventtype,</if>
+            <if test="eventstate != null ">eventstate,</if>
+            <if test="eventtime != null ">eventtime,</if>
+            <if test="eventinfo != null  and eventinfo != ''">eventinfo,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="eventid != null  and eventid != ''">#{eventid},</if>
+            <if test="appid != null  and appid != ''">#{appid},</if>
+            <if test="moduleid != null  and moduleid != ''">#{moduleid},</if>
+            <if test="eventtype != null ">#{eventtype},</if>
+            <if test="eventstate != null ">#{eventstate},</if>
+            <if test="eventtime != null ">#{eventtime},</if>
+            <if test="eventinfo != null  and eventinfo != ''">#{eventinfo},</if>
+         </trim>
+    </insert>
+
+    <update id="updateTLog" parameterType="TLog">
+        update t_log
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="eventid != null  and eventid != ''">eventid = #{eventid},</if>
+            <if test="appid != null  and appid != ''">appid = #{appid},</if>
+            <if test="moduleid != null  and moduleid != ''">moduleid = #{moduleid},</if>
+            <if test="eventtype != null ">eventtype = #{eventtype},</if>
+            <if test="eventstate != null ">eventstate = #{eventstate},</if>
+            <if test="eventtime != null ">eventtime = #{eventtime},</if>
+            <if test="eventinfo != null  and eventinfo != ''">eventinfo = #{eventinfo},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteTLogById" parameterType="Long">
+        delete from t_log where id = #{id}
+    </delete>
+
+    <delete id="deleteTLogByIds" parameterType="String">
+        delete from t_log where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

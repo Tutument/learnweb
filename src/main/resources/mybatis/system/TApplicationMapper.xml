@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cipherresource.project.system.application.mapper.TApplicationMapper">
+    
+    <resultMap type="TApplication" id="TApplicationResult">
+        <result property="id"    column="id"    />
+        <result property="appid"    column="appid"    />
+        <result property="appname"    column="appname"    />
+        <result property="status"    column="status"    />
+        <result property="createdate"    column="createdate"    />
+        <result property="type"    column="type"    />
+        <result property="ownerid"    column="ownerid"    />
+        <result property="topub"    column="topub"    />
+        <result property="dpkindex"    column="dpkindex"    />
+    </resultMap>
+
+    <sql id="selectTApplicationVo">
+        select id, appid, appname, status, createdate, type, ownerid, topub, dpkindex from t_application
+    </sql>
+
+    <select id="selectTApplicationList" parameterType="TApplication" resultMap="TApplicationResult">
+        <include refid="selectTApplicationVo"/>
+        <where>  
+            <if test="appname != null  and appname != ''"> and appname like concat('%', #{appname}, '%')</if>
+            <if test="status != null "> and status = #{status}</if>
+            <if test="type != null "> and type = #{type}</if>
+            <if test="ownerid != null  and ownerid != ''"> and ownerid = #{ownerid}</if>
+            <if test="topub != null "> and topub = #{topub}</if>
+            <if test="dpkindex != null "> and dpkindex = #{dpkindex}</if>
+        </where>
+    </select>
+    
+    <select id="selectTApplicationListByOwnerId" parameterType="TApplication" resultMap="TApplicationResult">
+        <include refid="selectTApplicationVo"/>
+        where ownerid = #{ownerid}
+    </select>
+  
+    <select id="selectTApplicationByAppid" parameterType="TApplication" resultMap="TApplicationResult">
+        <include refid="selectTApplicationVo"/>
+        where appid = #{appid}
+    </select>
+    
+    <select id="selectTApplicationById" parameterType="Long" resultMap="TApplicationResult">
+        <include refid="selectTApplicationVo"/>
+        where id = #{id}
+    </select>
+      
+    <insert id="insertTApplication" parameterType="TApplication" useGeneratedKeys="true" keyProperty="id">
+        insert into t_application
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="appid != null  and appid != ''">appid,</if>
+            <if test="appname != null  and appname != ''">appname,</if>
+            <if test="status != null ">status,</if>
+            <if test="createdate != null  and createdate != ''">createdate,</if>
+            <if test="type != null ">type,</if>
+            <if test="ownerid != null  and ownerid != ''">ownerid,</if>
+            <if test="topub != null ">topub,</if>
+            <if test="dpkindex != null ">dpkindex,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="appid != null  and appid != ''">#{appid},</if>
+            <if test="appname != null  and appname != ''">#{appname},</if>
+            <if test="status != null ">#{status},</if>
+            <if test="createdate != null  and createdate != ''">#{createdate},</if>
+            <if test="type != null ">#{type},</if>
+            <if test="ownerid != null  and ownerid != ''">#{ownerid},</if>
+            <if test="topub != null ">#{topub},</if>
+            <if test="dpkindex != null ">#{dpkindex},</if>
+         </trim>
+    </insert>
+      
+    <insert id="insertTApplicationD" parameterType="TApplication" useGeneratedKeys="true" keyProperty="id">
+        insert into t_application
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="appid != null  and appid != ''">appid,</if>
+            <if test="appname != null  and appname != ''">appname,</if>
+            <if test="status != null ">status,</if>
+            <if test="createdate != null  and createdate != ''">createdate,</if>
+            <if test="type != null ">type,</if>
+            <if test="ownerid != null  and ownerid != ''">ownerid,</if>
+            <if test="topub != null ">topub,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="appid != null  and appid != ''">#{appid},</if>
+            <if test="appname != null  and appname != ''">#{appname},</if>
+            <if test="status != null ">#{status},</if>
+            <if test="createdate != null  and createdate != ''">#{createdate},</if>
+            <if test="type != null ">#{type},</if>
+            <if test="ownerid != null  and ownerid != ''">#{ownerid},</if>
+            <if test="topub != null ">#{topub},</if>
+         </trim>
+         <trim prefix="ON DUPLICATE KEY UPDATE" suffixOverrides=",">
+            <if test="appid != null  and appid != ''">appid = #{appid},</if>
+            <if test="appname != null  and appname != ''">appname = #{appname},</if>
+            <if test="status != null ">status = #{status},</if>
+            <if test="type != null ">type = #{type},</if>
+            <if test="ownerid != null  and ownerid != ''">ownerid = #{ownerid},</if>
+            <if test="topub != null ">topub = #{topub},</if>
+        </trim> 
+    </insert>
+    
+    <update id="updateTApplication" parameterType="TApplication">
+        update t_application
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="appid != null  and appid != ''">appid = #{appid},</if>
+            <if test="appname != null  and appname != ''">appname = #{appname},</if>
+            <if test="status != null ">status = #{status},</if>
+            <if test="type != null ">type = #{type},</if>
+            <if test="ownerid != null  and ownerid != ''">ownerid = #{ownerid},</if>
+            <if test="topub != null ">topub = #{topub},</if>
+            <if test="dpkindex != null ">dpkindex= #{dpkindex},</if>
+        </trim>
+        where id = #{id}
+    </update>
+    
+    <update id="updateTApplicationToPub">
+        update t_application 
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="topub != null ">topub = #{topub},</if>
+        </trim>
+        where appid = #{appid}
+    </update>
+    
+    <update id="updateInitData">
+    	update t_application
+    	<trim prefix="SET" suffixOverrides=",">
+            <if test="servsysappid != null and servsysappid != ''">ownerid = #{servsysappid},</if>
+        </trim>
+		where appid = #{appid} and appname = #{appname}
+    </update>
+
+    <delete id="deleteTApplicationById" parameterType="Long">
+        delete from t_application where id = #{id}
+    </delete>
+
+    <delete id="deleteTApplicationByIds" parameterType="String">
+        delete from t_application where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

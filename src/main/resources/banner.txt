@@ -1,0 +1,3 @@
+${xyf.learnwebrun.name} Application Version: ${xyf.learnwebrun.version}
+Spring Boot Version: ${spring-boot.version}
+密钥管理中心启动中，请稍等...

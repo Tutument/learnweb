@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cipherresource.project.system.card.mapper.TCardMapper">
+    <resultMap type="CardApp" id="CardAppResult">
+        <result property="appid"    column="appid"    />
+        <result property="appname"    column="appname"    />
+        <result property="ownerid"    column="ownerid"    />
+    </resultMap>
+    <resultMap type="TCard" id="TCardResult">
+        <result property="id"    column="id"    />
+        <result property="cardid"    column="cardid"    />
+        <result property="cardmodel"    column="cardmodel"    />
+        <result property="cardmanu"    column="cardmanu"    />
+        <result property="status"    column="status"    />
+        <result property="clusterid"    column="clusterid"    />
+        <result property="clustername"    column="clustername"    />
+        <result property="moduleid"    column="moduleid"    />
+        <result property="appid"    column="appid"    />
+        <result property="appname"    column="appname"    />
+        <result property="feature"    column="feature"    />
+        <result property="topub"    column="topub"    />    
+        <result property="gatewaymodel"    column="gatewaymodel"    />
+        <result property="gatewayfunction"    column="gatewayfunction"    />
+        <result property="gatewayid"    column="gatewayid"    />
+        <result property="network"    column="network"    />
+        <result property="gatewayharddisksn"    column="gatewayharddisksn"    />
+        <result property="gatewaycpusn"    column="gatewaycpusn"    />
+        <result property="gatewaynetworkcardsn"    column="gatewaynetworkcardsn"    />
+        <result property="gatewayuse"    column="gatewayuse"    />     
+    </resultMap>
+
+    <sql id="selectTCardVo">
+        select a.id, cardid, cardmodel, cardmanu, a.status, a.clusterid, b.clustername, moduleid, appid, feature, a.topub,
+        gatewaymodel, gatewayfunction, gatewayid, network, gatewayharddisksn, gatewaycpusn,
+        gatewaynetworkcardsn, gatewayuse from t_card a left join t_cardcluster b on a.clusterid = b.clusterid
+    </sql>
+
+    <select id="selectTCardList" parameterType="TCard" resultMap="TCardResult">
+        <include refid="selectTCardVo"/>
+        <where>  
+            <if test="cardmodel != null  and cardmodel != ''"> and cardmodel = #{cardmodel}</if>
+            <if test="cardmanu != null  and cardmanu != ''"> and cardmanu = #{cardmanu}</if>
+            <if test="status != null "> and status = #{status}</if>
+            <if test="clusterid != null  and clusterid != ''"> and clusterid = #{clusterid}</if>
+            <if test="moduleid != null  and moduleid != ''"> and moduleid = #{moduleid}</if>
+            <if test="appid != null  and appid != ''"> and appid = #{appid}</if>
+            <if test="feature != null  and feature != ''"> and feature = #{feature}</if>
+            <if test="topub != null "> and topub = #{topub}</if>        
+            <if test="gatewaymodel != null  and gatewaymodel != ''"> and gatewaymodel = #{gatewaymodel}</if>
+            <if test="gatewayfunction != null  and gatewayfunction != ''"> and gatewayfunction = #{gatewayfunction}</if>
+            <if test="gatewayid != null  and gatewayid != ''"> and gatewayid = #{gatewayid}</if>
+            <if test="network != null  and network != ''"> and network = #{network}</if>
+            <if test="gatewayharddisksn != null  and gatewayharddisksn != ''"> and gatewayharddisksn = #{gatewayharddisksn}</if>
+            <if test="gatewaycpusn != null  and gatewaycpusn != ''"> and gatewaycpusn = #{gatewaycpusn}</if>
+            <if test="gatewaynetworkcardsn != null  and gatewaynetworkcardsn != ''"> and gatewaynetworkcardsn = #{gatewaynetworkcardsn}</if>
+            <if test="gatewayuse != null  and gatewayuse != ''"> and gatewayuse = #{gatewayuse}</if>
+        </where>
+    </select>
+    
+    <select id="selectTCardListWithoutFeature" resultMap="TCardResult">
+        <include refid="selectTCardVo"/>
+        where feature is null or feature = ""
+    </select>
+    
+    <select id="selectCountTCardWithoutFeature" resultType="Long">
+        SELECT COUNT(*) FROM t_card WHERE feature IS NULL or feature = ""
+    </select>
+    
+    <select id="selectTCardById" parameterType="Long" resultMap="TCardResult">
+        <include refid="selectTCardVo"/>
+        where id = #{id}
+    </select>
+    
+    <select id="selectTCardByModuleid" resultMap="TCardResult">
+        <include refid="selectTCardVo"/>
+        where moduleid = #{moduleid} limit 1
+    </select>
+    
+    <select id="selectTCardByCardid" resultMap="TCardResult">
+        <include refid="selectTCardVo"/>
+        where cardid = #{cardid}
+    </select>
+    
+    <!-- select id="selectTCardHisByCardid" resultMap="TCardResult">
+        select id, cardid, cardmodel, cardmanu, status, clusterid, moduleid, feature, topub from t_card_his
+        where cardid = #{cardid} ORDER BY id desc LIMIT 1
+    </select-->
+      
+    <select id="selectTCardByCardidEx" resultMap="TCardResult">
+        <include refid="selectTCardVo"/>
+        where cardid = #{cardid} and cardmodel = #{cardmodel} and cardmanu = #{cardmanu}
+    </select>
+          
+    <select id="selectTCardAndAppByCardid" resultMap="TCardResult">
+        select a.*, b.appname, c.clustername from t_card a
+        LEFT JOIN t_application b on a.appid = b.appid
+        LEFT JOIN t_cardcluster c on a.clusterid = c.clusterid
+        where cardid = #{cardid}
+    </select>
+       
+    <insert id="insertTCard" parameterType="TCard" useGeneratedKeys="true" keyProperty="id">
+        insert into t_card
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="cardid != null  and cardid != ''">cardid,</if>
+            <if test="cardmodel != null  and cardmodel != ''">cardmodel,</if>
+            <if test="cardmanu != null  and cardmanu != ''">cardmanu,</if>
+            <if test="status != null ">status,</if>
+            <if test="clusterid != null  and clusterid != ''">clusterid,</if>
+            <if test="moduleid != null  and moduleid != ''">moduleid,</if>
+            <if test="appid != null  and appid != ''">appid,</if>
+            <if test="feature != null  and feature != ''">feature,</if>
+            <if test="topub != null ">topub,</if>
+            <if test="gatewaymodel != null  and gatewaymodel != ''">gatewaymodel,</if>
+            <if test="gatewayfunction != null  and gatewayfunction != ''">gatewayfunction,</if>
+            <if test="gatewayid != null  and gatewayid != ''">gatewayid,</if>
+            <if test="network != null  and network != ''">network,</if>
+            <if test="gatewayharddisksn != null  and gatewayharddisksn != ''">gatewayharddisksn,</if>
+            <if test="gatewaycpusn != null  and gatewaycpusn != ''">gatewaycpusn,</if>
+            <if test="gatewaynetworkcardsn != null  and gatewaynetworkcardsn != ''">gatewaynetworkcardsn,</if>
+            <if test="gatewayuse != null  and gatewayuse != ''">gatewayuse,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="cardid != null  and cardid != ''">#{cardid},</if>
+            <if test="cardmodel != null  and cardmodel != ''">#{cardmodel},</if>
+            <if test="cardmanu != null  and cardmanu != ''">#{cardmanu},</if>
+            <if test="status != null ">#{status},</if>
+            <if test="clusterid != null  and clusterid != ''">#{clusterid},</if>
+            <if test="moduleid != null  and moduleid != ''">#{moduleid},</if>
+            <if test="appid != null  and appid != ''">#{appid},</if>
+            <if test="feature != null  and feature != ''">#{feature},</if>
+            <if test="topub != null ">#{topub},</if>
+            <if test="gatewaymodel != null  and gatewaymodel != ''">#{gatewaymodel},</if>
+            <if test="gatewayfunction != null  and gatewayfunction != ''">#{gatewayfunction},</if>
+            <if test="gatewayid != null  and gatewayid != ''">#{gatewayid},</if>
+            <if test="network != null  and network != ''">#{network},</if>
+            <if test="gatewayharddisksn != null  and gatewayharddisksn != ''">#{gatewayharddisksn},</if>
+            <if test="gatewaycpusn != null  and gatewaycpusn != ''">#{gatewaycpusn},</if>
+            <if test="gatewaynetworkcardsn != null  and gatewaynetworkcardsn != ''">#{gatewaynetworkcardsn},</if>
+            <if test="gatewayuse != null  and gatewayuse != ''">#{gatewayuse},</if>
+         </trim>
+    </insert>
+
+    <update id="updateTCard" parameterType="TCard">
+        update t_card
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="cardid != null  and cardid != ''">cardid = #{cardid},</if>
+            <if test="cardmodel != null  and cardmodel != ''">cardmodel = #{cardmodel},</if>
+            <if test="cardmanu != null  and cardmanu != ''">cardmanu = #{cardmanu},</if>
+            <if test="status != null ">status = #{status},</if>
+            <if test="clusterid != null  and clusterid != ''">clusterid = #{clusterid},</if>
+            <if test="moduleid != null  and moduleid != ''">moduleid = #{moduleid},</if>
+            <if test="appid != null  and appid != ''">appid = #{appid},</if>
+            <if test="feature != null  and feature != ''">feature = #{feature},</if>
+            <if test="topub != null ">topub = #{topub},</if>
+            <if test="gatewaymodel != null  and gatewaymodel != ''">gatewaymodel = #{gatewaymodel},</if>
+            <if test="gatewayfunction != null  and gatewayfunction != ''">gatewayfunction = #{gatewayfunction},</if>
+            <if test="gatewayid != null  and gatewayid != ''">gatewayid = #{gatewayid},</if>
+            <if test="network != null  and network != ''">network = #{network},</if>
+            <if test="gatewayharddisksn != null  and gatewayharddisksn != ''">gatewayharddisksn = #{gatewayharddisksn},</if>
+            <if test="gatewaycpusn != null  and gatewaycpusn != ''">gatewaycpusn = #{gatewaycpusn},</if>
+            <if test="gatewaynetworkcardsn != null  and gatewaynetworkcardsn != ''">gatewaynetworkcardsn = #{gatewaynetworkcardsn},</if>
+            <if test="gatewayuse != null  and gatewayuse != ''">gatewayuse = #{gatewayuse},</if>
+        </trim>
+        where id = #{id}
+    </update>
+    
+    <update id="updateTCardRegister" parameterType="TCard">
+        update t_card
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="cardid != null  and cardid != ''">cardid = #{cardid},</if>
+            <if test="cardmodel != null  and cardmodel != ''">cardmodel = #{cardmodel},</if>
+            <if test="cardmanu != null  and cardmanu != ''">cardmanu = #{cardmanu},</if>
+            <if test="status != null ">status = #{status},</if>
+            <if test="true">clusterid = #{clusterid},</if>
+            <if test="moduleid != null  and moduleid != ''">moduleid = #{moduleid},</if>
+            <if test="appid != null  and appid != ''">appid = #{appid},</if>
+            <if test="feature != null  and feature != ''">feature = #{feature},</if>
+            <if test="topub != null ">topub = #{topub},</if>
+            <if test="gatewaymodel != null  and gatewaymodel != ''">gatewaymodel = #{gatewaymodel},</if>
+            <if test="gatewayfunction != null  and gatewayfunction != ''">gatewayfunction = #{gatewayfunction},</if>
+            <if test="gatewayid != null  and gatewayid != ''">gatewayid = #{gatewayid},</if>
+            <if test="network != null  and network != ''">network = #{network},</if>
+            <if test="gatewayharddisksn != null  and gatewayharddisksn != ''">gatewayharddisksn = #{gatewayharddisksn},</if>
+            <if test="gatewaycpusn != null  and gatewaycpusn != ''">gatewaycpusn = #{gatewaycpusn},</if>
+            <if test="gatewaynetworkcardsn != null  and gatewaynetworkcardsn != ''">gatewaynetworkcardsn = #{gatewaynetworkcardsn},</if>
+            <if test="gatewayuse != null  and gatewayuse != ''">gatewayuse = #{gatewayuse},</if>
+        </trim>
+        where id = #{id}
+    </update>
+    
+    <update id="updateTCardToPub">
+        update t_card 
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="topub != null ">topub = #{topub},</if>
+        </trim>
+        where cardid = #{cardid} and cardmodel = #{cardmodel} and cardmanu = #{cardmanu}
+    </update>
+    
+    <update id="updateTCardCluster">
+        update t_card
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="clusterid != null  and clusterid != ''">clusterid = #{clusterid},</if>
+        </trim>
+        where cardid = #{cardid} and cardmodel = #{cardmodel} and cardmanu = #{cardmanu}
+    </update>
+    
+    <update id="updateTCardModule">
+        update t_card
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="moduleid != null  and moduleid != ''">moduleid = #{moduleid},</if>
+        </trim>
+        where cardid = #{cardid} and cardmodel = #{cardmodel} and cardmanu = #{cardmanu}
+    </update>
+    
+    <update id="updateTCardFeature">
+        update t_card
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="feature != null  and feature != ''">feature = #{feature},</if>
+        </trim>
+        where cardid = #{cardid} and cardmodel = #{cardmodel} and cardmanu = #{cardmanu}
+    </update>
+      
+    <update id="updateTCardFeatureByCardid">
+        update t_card SET feature = #{feature}, gatewayid = #{gatewayid} 
+        where cardid = #{cardid}
+    </update>
+     
+     <update id="updateTCardInitData">
+    	update t_mmk, t_application, t_card 
+    	<trim prefix="SET" suffixOverrides=",">
+            <if test="appid != null and appid != ''">t_mmk.appid = #{appid},</if>
+            t_mmk.isbind = 1,
+            <if test="servsysappid != null and servsysappid != ''">t_application.ownerid = #{servsysappid},</if>
+            <if test="moduleid != null and moduleid != ''">t_card.moduleid = #{moduleid},</if>
+        </trim>
+		where t_mmk.id = #{mmkid} and t_application.appid = #{appid} and appname = #{appname} and t_card.cardid = #{cardid} and t_card.appid = #{appid}
+    </update>
+
+    <delete id="deleteTCardById" parameterType="Long">
+        delete from t_card where id = #{id}
+    </delete>
+
+    <delete id="deleteTCardByIds" parameterType="String">
+        delete from t_card where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

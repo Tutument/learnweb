@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cipherresource.project.system.module.mapper.TModuleMapper">
+    
+    <resultMap type="TModule" id="TModuleResult">
+        <result property="id"    column="id"    />
+        <result property="moduleid"    column="moduleid"    />
+        <result property="appid"    column="appid"    />
+        <result property="status"    column="status"    />
+        <result property="topub"    column="topub"    />
+    </resultMap>
+
+    <sql id="selectTModuleVo">
+        select id, moduleid, appid, status, topub from t_module
+    </sql>
+
+    <select id="selectTModuleList" parameterType="TModule" resultMap="TModuleResult">
+        <include refid="selectTModuleVo"/>
+        <where>  
+            <if test="appid != null  and appid != ''"> and appid = #{appid}</if>
+            <if test="status != null "> and status = #{status}</if>
+            <if test="topub != null "> and topub = #{topub}</if>
+        </where>
+    </select>
+    
+    <select id="selectTModuleById" parameterType="Long" resultMap="TModuleResult">
+        <include refid="selectTModuleVo"/>
+        where id = #{id}
+    </select>
+    
+    <select id="selectTModuleByModuleid" parameterType="String" resultMap="TModuleResult">
+        <include refid="selectTModuleVo"/>
+        where moduleid = #{moduleid}
+    </select>
+        
+    <insert id="insertTModule" parameterType="TModule" useGeneratedKeys="true" keyProperty="id">
+        insert into t_module
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="moduleid != null  and moduleid != ''">moduleid,</if>
+            <if test="appid != null  and appid != ''">appid,</if>
+            <if test="status != null ">status,</if>
+            <if test="topub != null ">topub,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="moduleid != null  and moduleid != ''">#{moduleid},</if>
+            <if test="appid != null  and appid != ''">#{appid},</if>
+            <if test="status != null ">#{status},</if>
+            <if test="topub != null ">#{topub},</if>
+         </trim>
+    </insert>
+
+    <!-- xuwei add -->
+    <insert id="insertTModuleD" parameterType="TModule" useGeneratedKeys="true" keyProperty="id">
+        insert into t_module
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="moduleid != null  and moduleid != ''">moduleid,</if>
+            <if test="appid != null  and appid != ''">appid,</if>
+            <if test="status != null ">status,</if>
+            <if test="topub != null ">topub,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="moduleid != null  and moduleid != ''">#{moduleid},</if>
+            <if test="appid != null  and appid != ''">#{appid},</if>
+            <if test="status != null ">#{status},</if>
+            <if test="topub != null ">#{topub},</if>
+         </trim>
+        <trim prefix="ON DUPLICATE KEY UPDATE" suffixOverrides=",">
+            <if test="moduleid != null  and moduleid != ''">moduleid = #{moduleid},</if>
+            <if test="appid != null  and appid != ''">appid = #{appid},</if>
+            <if test="status != null ">status = #{status},</if>
+            <if test="topub != null ">topub = #{topub},</if>
+        </trim> 
+    </insert>
+
+    <update id="updateTModule" parameterType="TModule">
+        update t_module
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="moduleid != null  and moduleid != ''">moduleid = #{moduleid},</if>
+            <if test="appid != null  and appid != ''">appid = #{appid},</if>
+            <if test="status != null ">status = #{status},</if>
+            <if test="topub != null ">topub = #{topub},</if>
+        </trim>
+        where id = #{id}
+    </update>
+    
+    <update id="updateTModuleToPub">
+        update t_module
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="topub != null ">topub = #{topub},</if>
+        </trim>
+        where moduleid = #{moduleid}
+    </update>
+    
+    <update id="updateTModuleStatus">
+        update t_module
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="status != null ">status = #{status},</if>
+        </trim>
+        where moduleid = #{moduleid}
+    </update>
+    
+    <update id="updateTModuleAppid">
+        update t_module
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="appid != null and appid != ''">appid = #{appid},</if>
+        </trim>
+        where moduleid = #{moduleid}
+    </update>
+
+    <delete id="deleteTModuleById" parameterType="Long">
+        delete from t_module where id = #{id}
+    </delete>
+
+    <delete id="deleteTModuleByIds" parameterType="String">
+        delete from t_module where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

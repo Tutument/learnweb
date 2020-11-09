@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cipherresource.project.system.cert.mapper.TCertMapper">
+
+	<resultMap type="TCert" id="TCertResult">
+        <result property="createdate"    column="createdate"    />
+        <result property="certsn"    column="certsn"    />
+        <result property="notValidAfter"    column="notValidAfter"    />
+        <result property="prikey"    column="prikey"    />
+        <result property="pubkey"    column="pubkey"    />
+        <result property="cert"    column="cert"    />
+        <result property="conindex"    column="conindex"    />
+        <result property="ownerid"    column="ownerid"    />
+        <result property="ownername"    column="ownername"    />
+    </resultMap>
+
+    <insert id="addTAuthCert">
+        insert into t_authcert_his (ownerid, ownertype, appid, type, status, version, createdate, certsn, notValidDate, pubkey, cert) 
+        select ownerid, ownertype, appid, type, status, version, createdate, certsn, notValidDate, pubkey, cert from t_authcert
+        where ownerid = #{ownerid} and ownertype = #{ownertype}
+    </insert>
+    
+    <update id="updateTAuthCert">
+        update t_authcert
+        <trim prefix="SET" suffixOverrides=",">
+        	type = 1,
+        	status = 1,
+        	version = version + 1,
+            <if test="createdate != null  and createdate != ''">createdate = #{createdate},</if>
+            <if test="certsn != null  and certsn != ''">certsn = #{certsn},</if>
+            <if test="notValidDate != null  and notValidDate != ''">notValidDate = #{notValidDate},</if>
+            <if test="pubkey != null ">pubkey = #{pubkey},</if>
+            <if test="cert != null and cert != ''">cert = #{cert},</if>
+        </trim>
+        where ownerid = #{ownerid} and ownertype = #{ownertype}
+    </update>
+    
+    <insert id="insertTAppCert">
+        insert into t_appcert (status, version, createdate, certsn, notValidDate, prikey, pubkey, cert, conindex, appid) values (
+        1,
+        1,
+            <if test="createdate != null and createdate != ''">#{createdate},</if>
+            <if test="certsn != null and certsn != ''">#{certsn},</if>
+            <if test="notValidDate != null and notValidDate != ''">#{notValidDate},</if>
+            <if test="prikey != null ">#{prikey},</if>
+            <if test="pubkey != null ">#{pubkey},</if>
+            <if test="cert != null and cert != ''">#{cert},</if>
+            <if test="conindex != null ">#{conindex},</if>
+            <if test="appid != null and appid != ''">#{appid}</if>)
+    </insert>
+
+	<insert id="addTCardCert">
+        insert into t_cardcert_his (cardid, status, version, createdate, certsn, notValidDate, pubkey, cert) 
+        select cardid, status, version, createdate, certsn, notValidDate, pubkey, cert from t_cardcert
+        where cardid = #{cardid}
+    </insert>
+    
+    <insert id="insertTCardCert">
+        insert into t_cardcert (status, version, createdate, certsn, notValidDate, pubkey, cert, cardid) values (
+        1,
+        1,
+            <if test="createdate != null and createdate != ''">#{createdate},</if>
+            <if test="certsn != null and certsn != ''">#{certsn},</if>
+            <if test="notValidDate != null and notValidDate != ''">#{notValidDate},</if>
+            <if test="pubkey != null ">#{pubkey},</if>
+            <if test="cert != null and cert != ''">#{cert},</if>
+            <if test="cardid != null and cardid != ''">#{cardid}</if>)
+    </insert>
+    
+    <update id="updateTCardCert">
+        update t_cardcert
+        <trim prefix="SET" suffixOverrides=",">
+        	status = 1,
+        	version = version + 1,
+            <if test="createdate != null and createdate != ''">createdate = #{createdate},</if>
+            <if test="certsn != null and certsn != ''">certsn = #{certsn},</if>
+            <if test="notValidDate != null and notValidDate != ''">notValidDate = #{notValidDate},</if>
+            <if test="pubkey != null ">pubkey = #{pubkey},</if>
+            <if test="cert != null and cert != ''">cert = #{cert},</if>
+        </trim>
+        where cardid = #{cardid}
+    </update>
+    
+    <insert id="insertTClusterCert">
+        insert into t_cardclustercert (status, version, createdate, certsn, notValidDate, prikey, pubkey, cert, conindex, clusterid) values (
+        1,
+        1,
+            <if test="createdate != null and createdate != ''">#{createdate},</if>
+            <if test="certsn != null and certsn != ''">#{certsn},</if>
+            <if test="notValidDate != null and notValidDate != ''">#{notValidDate},</if>
+            <if test="prikey != null ">#{prikey},</if>
+            <if test="pubkey != null ">#{pubkey},</if>
+            <if test="cert != null and cert != ''">#{cert},</if>
+            <if test="conindex != null ">#{conindex},</if>
+            <if test="clusterid != null and clusterid != ''">#{clusterid}</if>)
+    </insert>
+
+    <select id="selectTRootCert" resultType="String">
+        select cert from t_miccert where type = 0 and status = 1 limit 1
+    </select>
+    
+    <select id="selectTMicCert" resultType="String">
+    	select cert from t_miccert where type = #{type} and status = 1 limit 1
+    </select>
+    
+    <select id="selectTServerCert" resultType="String">
+    	select cert from t_servercert where appid = #{appid} and status = 1 limit 1
+    </select>
+    
+    <select id="selectTSignCert" resultType="String">
+    	select cert from t_signcert where status = 1 limit 1
+    </select>
+    
+    <select id="selectTAppCert" resultMap="TCertResult">
+    	select t1.createdate, certsn, notValidDate, prikey, pubkey, cert, conindex, t2.appid as ownerid, appname as ownername from t_appcert t1 left join t_application t2 on t1.appid = t2.appid where t1.appid = #{appid} limit 1
+    </select>
+       
+    <select id="selectTCardCert" resultMap="TCertResult">
+    	select t1.createdate, certsn, notValidDate, null as prikey, pubkey, cert, -1 as conindex, t2.cardid as ownerid, concat(cardmodel, ',', cardmanu) as ownername from t_cardcert t1 left join t_card t2 on t1.cardid = t2.cardid where t1.cardid = #{cardid} limit 1
+    </select>
+    
+    <select id="selectTCardclusterCert" resultMap="TCertResult">
+    	select t1.createdate, certsn, notValidDate, prikey, pubkey, cert, conindex, t2.clusterid as ownerid, clustername as ownername from t_cardclustercert t1 left join t_cardcluster t2 on t1.clusterid = t2.clusterid where t1.clusterid = #{clusterid} limit 1
+    </select>
+    
+</mapper>

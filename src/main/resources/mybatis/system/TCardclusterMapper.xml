@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cipherresource.project.system.cardcluster.mapper.TCardclusterMapper">
+    
+    <resultMap type="TCardcluster" id="TCardclusterResult">
+        <result property="id"    column="id"    />
+        <result property="clusterid"    column="clusterid"    />
+        <result property="clustername"    column="clustername"    />
+        <result property="status"    column="status"    />
+        <result property="topub"    column="topub"    />
+    </resultMap>
+
+    <sql id="selectTCardclusterVo">
+        select id, clusterid, clustername, status, topub from t_cardcluster
+    </sql>
+
+    <select id="selectTCardclusterList" parameterType="TCardcluster" resultMap="TCardclusterResult">
+        <include refid="selectTCardclusterVo"/>
+        <where>  
+            <if test="clusterid != null  and clusterid != ''"> and clusterid = #{clusterid}</if>
+            <if test="clustername != null  and clustername != ''"> and clustername like concat('%', #{clustername}, '%')</if>
+            <if test="status != null "> and status = #{status}</if>
+            <if test="topub != null "> and topub = #{topub}</if>
+        </where>
+    </select>
+    
+    <select id="selectTCardclusterById" parameterType="Long" resultMap="TCardclusterResult">
+        <include refid="selectTCardclusterVo"/>
+        where id = #{id}
+    </select>
+    
+    <select id="selectTCardclusterByClusterid" parameterType="String" resultMap="TCardclusterResult">
+        <include refid="selectTCardclusterVo"/>
+        where clusterid = #{clusterid}
+    </select>
+        
+    <insert id="insertTCardcluster" parameterType="TCardcluster" useGeneratedKeys="true" keyProperty="id">
+        insert into t_cardcluster
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="clusterid != null  and clusterid != ''">clusterid,</if>
+            <if test="clustername != null  and clustername != ''">clustername,</if>
+            <if test="status != null ">status,</if>
+            <if test="topub != null ">topub,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="clusterid != null  and clusterid != ''">#{clusterid},</if>
+            <if test="clustername != null  and clustername != ''">#{clustername},</if>
+            <if test="status != null ">#{status},</if>
+            <if test="topub != null ">#{topub},</if>
+         </trim>
+    </insert>
+
+    <update id="updateTCardcluster" parameterType="TCardcluster">
+        update t_cardcluster
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="clusterid != null  and clusterid != ''">clusterid = #{clusterid},</if>
+            <if test="clustername != null  and clustername != ''">clustername = #{clustername},</if>
+            <if test="status != null ">status = #{status},</if>
+            <if test="topub != null ">topub = #{topub},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <update id="updateTCardclusterToPub" parameterType="int">
+        update t_cardcluster
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="topub == 0 or topub == 1">topub = #{topub},</if>
+        </trim>
+        where clusterid = #{clusterid}
+    </update>
+    
+    <delete id="deleteTCardclusterById" parameterType="Long">
+        delete from t_cardcluster where id = #{id}
+    </delete>
+
+    <delete id="deleteTCardclusterByIds" parameterType="String">
+        delete from t_cardcluster where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

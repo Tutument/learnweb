@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cipherresource.project.system.passcardcert.mapper.TPasscardcertMapper">
+    
+    <resultMap type="TPasscardcert" id="TPasscardcertResult">
+        <result property="id"    column="id"    />
+        <result property="status"    column="status"    />
+        <result property="version"    column="version"    />
+        <result property="createdate"    column="createdate"    />
+        <result property="certsn"    column="certsn"    />
+        <result property="certname"    column="certname"    />
+        <result property="notvaliddate"    column="notValidDate"    />
+    </resultMap>
+
+    <sql id="selectTPasscardcertVo">
+        select id, status, version, createdate, certsn, certname, notValidDate from t_passcardcert
+    </sql>
+
+    <select id="selectTPasscardcertList" parameterType="TPasscardcert" resultMap="TPasscardcertResult">
+        <include refid="selectTPasscardcertVo"/>
+        <where>  
+            <if test="status != null "> and status = #{status}</if>
+            <if test="version != null  and version != ''"> and version = #{version}</if>
+            <if test="createdate != null "> and createdate = #{createdate}</if>
+            <if test="certsn != null  and certsn != ''"> and certsn = #{certsn}</if>
+            <if test="certname != null  and certname != ''"> and certname like concat('%', #{certname}, '%')</if>
+            <if test="notvaliddate != null "> and notValidDate = #{notvaliddate}</if>
+        </where>
+    </select>
+    
+    <select id="selectTPasscardcertById" parameterType="Long" resultMap="TPasscardcertResult">
+        <include refid="selectTPasscardcertVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertTPasscardcert" parameterType="TPasscardcert">
+        insert into t_passcardcert
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null ">id,</if>
+            <if test="status != null ">status,</if>
+            <if test="version != null  and version != ''">version,</if>
+            <if test="createdate != null ">createdate,</if>
+            <if test="certsn != null  and certsn != ''">certsn,</if>
+            <if test="certname != null  and certname != ''">certname,</if>
+            <if test="notvaliddate != null ">notValidDate,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null ">#{id},</if>
+            <if test="status != null ">#{status},</if>
+            <if test="version != null  and version != ''">#{version},</if>
+            <if test="createdate != null ">#{createdate},</if>
+            <if test="certsn != null  and certsn != ''">#{certsn},</if>
+            <if test="certname != null  and certname != ''">#{certname},</if>
+            <if test="notvaliddate != null ">#{notvaliddate},</if>
+         </trim>
+    </insert>
+
+    <update id="updateTPasscardcert" parameterType="TPasscardcert">
+        update t_passcardcert
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="status != null ">status = #{status},</if>
+            <if test="version != null  and version != ''">version = #{version},</if>
+            <if test="createdate != null ">createdate = #{createdate},</if>
+            <if test="certsn != null  and certsn != ''">certsn = #{certsn},</if>
+            <if test="certname != null  and certname != ''">certname = #{certname},</if>
+            <if test="notvaliddate != null ">notValidDate = #{notvaliddate},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteTPasscardcertById" parameterType="Long">
+        delete from t_passcardcert where id = #{id}
+    </delete>
+
+    <delete id="deleteTPasscardcertByIds" parameterType="String">
+        delete from t_passcardcert where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

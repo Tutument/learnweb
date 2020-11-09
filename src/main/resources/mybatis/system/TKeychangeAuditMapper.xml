@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cipherresource.project.system.keychange_audit.mapper.TKeychangeAuditMapper">
+    
+    <resultMap type="TKeychangeAudit" id="TKeychangeAuditResult">
+        <result property="id"    column="id"    />
+        <result property="operationType"    column="operation_type"    />
+        <result property="keyId"    column="key_id"    />
+        <result property="operationTime"    column="operation_time"    />
+    </resultMap>
+
+    <sql id="selectTKeychangeAuditVo">
+        select id, operation_type, key_id, operation_time from t_keychange_audit
+    </sql>
+
+    <select id="selectTKeychangeAuditList" parameterType="TKeychangeAudit" resultMap="TKeychangeAuditResult">
+        <include refid="selectTKeychangeAuditVo"/>
+        <where>  
+            <if test="operationType != null  and operationType != ''"> and operation_type = #{operationType}</if>
+            <if test="keyId != null "> and key_id = #{keyId}</if>
+            <if test="operationTime != null "> and operation_time = #{operationTime}</if>
+        </where>
+    </select>
+    
+    <select id="selectTKeychangeAuditById" parameterType="Long" resultMap="TKeychangeAuditResult">
+        <include refid="selectTKeychangeAuditVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertTKeychangeAudit" parameterType="TKeychangeAudit">
+        insert into t_keychange_audit
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null ">id,</if>
+            <if test="operationType != null  and operationType != ''">operation_type,</if>
+            <if test="keyId != null ">key_id,</if>
+            <if test="operationTime != null ">operation_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null ">#{id},</if>
+            <if test="operationType != null  and operationType != ''">#{operationType},</if>
+            <if test="keyId != null ">#{keyId},</if>
+            <if test="operationTime != null ">#{operationTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateTKeychangeAudit" parameterType="TKeychangeAudit">
+        update t_keychange_audit
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="operationType != null  and operationType != ''">operation_type = #{operationType},</if>
+            <if test="keyId != null ">key_id = #{keyId},</if>
+            <if test="operationTime != null ">operation_time = #{operationTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteTKeychangeAuditById" parameterType="Long">
+        delete from t_keychange_audit where id = #{id}
+    </delete>
+
+    <delete id="deleteTKeychangeAuditByIds" parameterType="String">
+        delete from t_keychange_audit where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

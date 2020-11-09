@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cipherresource.project.system.modulauthcert.mapper.TModulauthcertMapper">
+    
+    <resultMap type="TModulauthcert" id="TModulauthcertResult">
+        <result property="id"    column="id"    />
+        <result property="moduleid"    column="moduleid"    />
+        <result property="status"    column="status"    />
+        <result property="version"    column="version"    />
+        <result property="createdate"    column="createdate"    />
+        <result property="certsn"    column="certsn"    />
+        <result property="certname"    column="certname"    />
+        <result property="notvaliddate"    column="notvaliddate"    />
+    </resultMap>
+
+    <sql id="selectTModulauthcertVo">
+        select id, moduleid, status, version, createdate, certsn, certname, notvaliddate from t_modulauthcert
+    </sql>
+
+    <select id="selectTModulauthcertList" parameterType="TModulauthcert" resultMap="TModulauthcertResult">
+        <include refid="selectTModulauthcertVo"/>
+        <where>  
+            <if test="moduleid != null  and moduleid != ''"> and moduleid = #{moduleid}</if>
+            <if test="status != null "> and status = #{status}</if>
+            <if test="version != null  and version != ''"> and version = #{version}</if>
+            <if test="createdate != null "> and createdate = #{createdate}</if>
+            <if test="certsn != null  and certsn != ''"> and certsn = #{certsn}</if>
+            <if test="certname != null  and certname != ''"> and certname like concat('%', #{certname}, '%')</if>
+            <if test="notvaliddate != null "> and notvaliddate = #{notvaliddate}</if>
+        </where>
+    </select>
+    
+    <select id="selectTModulauthcertById" parameterType="Long" resultMap="TModulauthcertResult">
+        <include refid="selectTModulauthcertVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertTModulauthcert" parameterType="TModulauthcert" useGeneratedKeys="true" keyProperty="id">
+        insert into t_modulauthcert
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="moduleid != null  and moduleid != ''">moduleid,</if>
+            <if test="status != null ">status,</if>
+            <if test="version != null  and version != ''">version,</if>
+            <if test="createdate != null ">createdate,</if>
+            <if test="certsn != null  and certsn != ''">certsn,</if>
+            <if test="certname != null  and certname != ''">certname,</if>
+            <if test="notvaliddate != null ">notvaliddate,</if>
+            <if test="cert != null and cert != '' ">cert,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="moduleid != null  and moduleid != ''">#{moduleid},</if>
+            <if test="status != null ">#{status},</if>
+            <if test="version != null  and version != ''">#{version},</if>
+            <if test="createdate != null ">#{createdate},</if>
+            <if test="certsn != null  and certsn != ''">#{certsn},</if>
+            <if test="certname != null  and certname != ''">#{certname},</if>
+            <if test="notvaliddate != null ">#{notvaliddate},</if>
+            <if test="cert != null and cert != ''">#{cert},</if>
+         </trim>
+    </insert>
+
+    <update id="updateTModulauthcert" parameterType="TModulauthcert">
+        update t_modulauthcert
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="moduleid != null  and moduleid != ''">moduleid = #{moduleid},</if>
+            <if test="status != null ">status = #{status},</if>
+            <if test="version != null  and version != ''">version = #{version},</if>
+            <if test="createdate != null ">createdate = #{createdate},</if>
+            <if test="certsn != null  and certsn != ''">certsn = #{certsn},</if>
+            <if test="certname != null  and certname != ''">certname = #{certname},</if>
+            <if test="notvaliddate != null ">notvaliddate = #{notvaliddate},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteTModulauthcertById" parameterType="Long">
+        delete from t_modulauthcert where id = #{id}
+    </delete>
+
+    <delete id="deleteTModulauthcertByIds" parameterType="String">
+        delete from t_modulauthcert where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

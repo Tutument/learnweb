@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cipherresource.project.system.idcardcert.mapper.TIdcardcertMapper">
+    
+    <resultMap type="TIdcardcert" id="TIdcardcertResult">
+        <result property="id"    column="id"    />
+        <result property="status"    column="status"    />
+        <result property="version"    column="version"    />
+        <result property="createdate"    column="createdate"    />
+        <result property="certsn"    column="certsn"    />
+        <result property="certname"    column="certname"    />
+        <result property="notvaliddate"    column="notValidDate"    />
+    </resultMap>
+
+    <sql id="selectTIdcardcertVo">
+        select id, status, version, createdate, certsn, certname, notValidDate from t_idcardcert
+    </sql>
+
+    <select id="selectTIdcardcertList" parameterType="TIdcardcert" resultMap="TIdcardcertResult">
+        <include refid="selectTIdcardcertVo"/>
+        <where>  
+            <if test="status != null "> and status = #{status}</if>
+            <if test="version != null  and version != ''"> and version = #{version}</if>
+            <if test="createdate != null "> and createdate = #{createdate}</if>
+            <if test="certsn != null  and certsn != ''"> and certsn = #{certsn}</if>
+            <if test="certname != null  and certname != ''"> and certname like concat('%', #{certname}, '%')</if>
+            <if test="notvaliddate != null "> and notValidDate = #{notvaliddate}</if>
+        </where>
+    </select>
+    
+    <select id="selectTIdcardcertById" parameterType="Long" resultMap="TIdcardcertResult">
+        <include refid="selectTIdcardcertVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertTIdcardcert" parameterType="TIdcardcert">
+        insert into t_idcardcert
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null ">id,</if>
+            <if test="status != null ">status,</if>
+            <if test="version != null  and version != ''">version,</if>
+            <if test="createdate != null ">createdate,</if>
+            <if test="certsn != null  and certsn != ''">certsn,</if>
+            <if test="certname != null  and certname != ''">certname,</if>
+            <if test="notvaliddate != null ">notValidDate,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null ">#{id},</if>
+            <if test="status != null ">#{status},</if>
+            <if test="version != null  and version != ''">#{version},</if>
+            <if test="createdate != null ">#{createdate},</if>
+            <if test="certsn != null  and certsn != ''">#{certsn},</if>
+            <if test="certname != null  and certname != ''">#{certname},</if>
+            <if test="notvaliddate != null ">#{notvaliddate},</if>
+         </trim>
+    </insert>
+    
+    <insert id="insertTIdcardcertHistory" parameterType="TIdcardcert">
+        insert into t_idcardcert_history
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null ">id,</if>
+            <if test="status != null ">status,</if>
+            <if test="version != null  and version != ''">version,</if>
+            <if test="createdate != null ">createdate,</if>
+            <if test="certsn != null  and certsn != ''">certsn,</if>
+            <if test="certname != null  and certname != ''">certname,</if>
+            <if test="notvaliddate != null ">notValidDate,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null ">#{id},</if>
+            <if test="status != null ">#{status},</if>
+            <if test="version != null  and version != ''">#{version},</if>
+            <if test="createdate != null ">#{createdate},</if>
+            <if test="certsn != null  and certsn != ''">#{certsn},</if>
+            <if test="certname != null  and certname != ''">#{certname},</if>
+            <if test="notvaliddate != null ">#{notvaliddate},</if>
+         </trim>
+    </insert>
+
+    <update id="updateTIdcardcert" parameterType="TIdcardcert">
+        update t_idcardcert
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="status != null ">status = #{status},</if>
+            <if test="version != null  and version != ''">version = #{version},</if>
+            <if test="createdate != null ">createdate = #{createdate},</if>
+            <if test="certsn != null  and certsn != ''">certsn = #{certsn},</if>
+            <if test="certname != null  and certname != ''">certname = #{certname},</if>
+            <if test="notvaliddate != null ">notValidDate = #{notvaliddate},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteTIdcardcertById" parameterType="Long">
+        delete from t_idcardcert where id = #{id}
+    </delete>
+
+    <delete id="deleteTIdcardcertByIds" parameterType="String">
+        delete from t_idcardcert where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

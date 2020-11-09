@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cipherresource.project.system.policy_audit.mapper.TPolicyAuditMapper">
+    
+    <resultMap type="TPolicyAudit" id="TPolicyAuditResult">
+        <result property="id"    column="id"    />
+        <result property="operationType"    column="operation_type"    />
+        <result property="keyId"    column="key_id"    />
+        <result property="operationTime"    column="operation_time"    />
+    </resultMap>
+
+    <sql id="selectTPolicyAuditVo">
+        select id, operation_type, key_id, operation_time from t_policy_audit
+    </sql>
+
+    <select id="selectTPolicyAuditList" parameterType="TPolicyAudit" resultMap="TPolicyAuditResult">
+        <include refid="selectTPolicyAuditVo"/>
+        <where>  
+            <if test="operationType != null  and operationType != ''"> and operation_type = #{operationType}</if>
+            <if test="keyId != null "> and key_id = #{keyId}</if>
+            <if test="operationTime != null "> and operation_time = #{operationTime}</if>
+        </where>
+    </select>
+    
+    <select id="selectTPolicyAuditById" parameterType="Long" resultMap="TPolicyAuditResult">
+        <include refid="selectTPolicyAuditVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertTPolicyAudit" parameterType="TPolicyAudit">
+        insert into t_policy_audit
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null ">id,</if>
+            <if test="operationType != null  and operationType != ''">operation_type,</if>
+            <if test="keyId != null ">key_id,</if>
+            <if test="operationTime != null ">operation_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null ">#{id},</if>
+            <if test="operationType != null  and operationType != ''">#{operationType},</if>
+            <if test="keyId != null ">#{keyId},</if>
+            <if test="operationTime != null ">#{operationTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateTPolicyAudit" parameterType="TPolicyAudit">
+        update t_policy_audit
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="operationType != null  and operationType != ''">operation_type = #{operationType},</if>
+            <if test="keyId != null ">key_id = #{keyId},</if>
+            <if test="operationTime != null ">operation_time = #{operationTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteTPolicyAuditById" parameterType="Long">
+        delete from t_policy_audit where id = #{id}
+    </delete>
+
+    <delete id="deleteTPolicyAuditByIds" parameterType="String">
+        delete from t_policy_audit where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

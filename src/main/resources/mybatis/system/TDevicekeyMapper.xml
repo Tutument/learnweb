@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper
+	namespace="com.cipherresource.project.system.devicekey.mapper.TDevicekeyMapper">
+
+	<resultMap type="TDevicekey" id="TDevicekeyResult">
+		<result property="id" column="id" />
+		<result property="status" column="status" />
+		<result property="version" column="version" />
+		<result property="createdate" column="createdate" />
+		<result property="checkcode" column="checkcode" />
+		<result property="sysname" column="sysname" />
+		<result property="keyname" column="keyname" />
+		<result property="serverid" column="serverid" />
+
+	</resultMap>
+
+	<sql id="selectTDevicekeyVo">
+		select id, status, version, createdate, checkcode, sysname,
+		keyname,serverid from
+		t_devicekey
+	</sql>
+	<sql id="selectTDevicekeyHisVo">
+		select id, status, version, createdate, checkcode, sysname,
+		keyname,serverid from
+		t_devicekey_his
+	</sql>
+	<select id="selectTDevicekeyList" parameterType="TDevicekey"
+		resultMap="TDevicekeyResult">
+		<include refid="selectTDevicekeyVo" />
+		<where>
+			<if test="status != null "> and status = #{status}</if>
+			<if test="version != null  and version != ''"> and version = #{version}</if>
+			<if test="createdate != null "> and createdate = #{createdate}</if>
+			<if test="checkcode != null  and checkcode != ''"> and checkcode = #{checkcode}</if>
+			<if test="sysname != null  and sysname != ''"> and sysname like concat('%', #{sysname}, '%')</if>
+			<if test="keyname != null  and keyname != ''"> and keyname like concat('%', #{keyname}, '%')</if>
+			<if test="serverid != null  and serverid != ''"> and serverid like concat('%', #{serverid}, '%')</if>
+
+		</where>
+	</select>
+
+	<select id="selectTDevicekeyById" parameterType="Long"
+		resultMap="TDevicekeyResult">
+		<include refid="selectTDevicekeyVo" />
+		where id = #{id}
+	</select>
+
+	<insert id="insertTDevicekey" parameterType="TDevicekey">
+		insert into t_devicekey
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null ">id,</if>
+			<if test="status != null ">status,</if>
+			<if test="version != null  and version != ''">version,</if>
+			<if test="createdate != null ">createdate,</if>
+			<if test="checkcode != null  and checkcode != ''">checkcode,</if>
+			<if test="sysname != null  and sysname != ''">sysname,</if>
+			<if test="keyname != null  and keyname != ''">keyname,</if>
+			<if test="serverid != null  and serverid != ''">serverid,</if>
+
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null ">#{id},</if>
+			<if test="status != null ">#{status},</if>
+			<if test="version != null  and version != ''">#{version},</if>
+			<if test="createdate != null ">#{createdate},</if>
+			<if test="checkcode != null  and checkcode != ''">#{checkcode},</if>
+			<if test="sysname != null  and sysname != ''">#{sysname},</if>
+			<if test="keyname != null  and keyname != ''">#{keyname},</if>
+			<if test="serverid != null  and serverid != ''">#{serverid},</if>
+
+		</trim>
+	</insert>
+
+	<update id="updateTDevicekey" parameterType="TDevicekey">
+		update t_devicekey
+		<trim prefix="SET" suffixOverrides=",">
+			<if test="status != null ">status = #{status},</if>
+			<if test="version != null  and version != ''">version = #{version},</if>
+			<if test="createdate != null ">createdate = #{createdate},</if>
+			<if test="checkcode != null  and checkcode != ''">checkcode = #{checkcode},</if>
+			<if test="sysname != null  and sysname != ''">sysname = #{sysname},</if>
+			<if test="keyname != null  and keyname != ''">keyname = #{keyname},</if>
+			<if test="serverid != null  and serverid != ''">serverid = #{serverid},</if>
+
+		</trim>
+		where id = #{id}
+	</update>
+	<update id="updateStatus" parameterType="TDevicekey">
+		update t_devicekey
+		<trim prefix="SET" suffixOverrides=",">
+			<if test="status != null ">status = #{status},</if>
+		</trim>
+		where id = #{id}
+	</update>
+	<delete id="deleteTDevicekeyById" parameterType="Long">
+		delete from
+		t_devicekey where id = #{id}
+	</delete>
+
+	<delete id="deleteTDevicekeyByIds" parameterType="String">
+		delete from t_devicekey where id in
+		<foreach item="id" collection="array" open="(" separator=","
+			close=")">
+			#{id}
+		</foreach>
+	</delete>
+	<select id="selectTDevicekeyByName" parameterType="String"
+		resultMap="TDevicekeyResult">
+		<include refid="selectTDevicekeyVo" />
+		where sysname = #{sysname} order by version desc limit 1
+	</select>
+	<select id="selectTDevicekeyByKeyName" parameterType="String"
+		resultMap="TDevicekeyResult">
+		<include refid="selectTDevicekeyVo" />
+		where keyname = #{keyname} order by version desc
+	</select>
+
+
+	<select id="selectTDevicekeyHisList" parameterType="TDevicekey"
+		resultMap="TDevicekeyResult">
+		<include refid="selectTDevicekeyHisVo" />
+		<where>
+			<if test="status != null "> and status = #{status}</if>
+			<if test="version != null  and version != ''"> and version = #{version}</if>
+			<if test="createdate != null "> and createdate = #{createdate}</if>
+			<if test="checkcode != null  and checkcode != ''"> and checkcode = #{checkcode}</if>
+			<if test="sysname != null  and sysname != ''"> and sysname like concat('%', #{sysname}, '%')</if>
+			<if test="keyname != null  and keyname != ''"> and keyname like concat('%', #{keyname}, '%')</if>
+			<if test="serverid != null  and serverid != ''"> and serverid like concat('%', #{serverid}, '%')</if>
+
+		</where>
+	</select>
+
+	<select id="selectTDevicekeyHisById" parameterType="Long"
+		resultMap="TDevicekeyResult">
+		<include refid="selectTDevicekeyHisVo" />
+		where id = #{id}
+	</select>
+
+	<insert id="insertTDevicekeyHis" parameterType="TDevicekey">
+		insert into t_devicekey_his
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null ">id,</if>
+			<if test="status != null ">status,</if>
+			<if test="version != null  and version != ''">version,</if>
+			<if test="createdate != null ">createdate,</if>
+			<if test="checkcode != null  and checkcode != ''">checkcode,</if>
+			<if test="sysname != null  and sysname != ''">sysname,</if>
+			<if test="keyname != null  and keyname != ''">keyname,</if>
+			<if test="serverid != null  and serverid != ''">serverid,</if>
+
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null ">#{id},</if>
+			<if test="status != null ">#{status},</if>
+			<if test="version != null  and version != ''">#{version},</if>
+			<if test="createdate != null ">#{createdate},</if>
+			<if test="checkcode != null  and checkcode != ''">#{checkcode},</if>
+			<if test="sysname != null  and sysname != ''">#{sysname},</if>
+			<if test="keyname != null  and keyname != ''">#{keyname},</if>
+			<if test="serverid != null  and serverid != ''">#{serverid},</if>
+
+		</trim>
+	</insert>
+
+	<update id="updateTDevicekeyHis" parameterType="TDevicekey">
+		update t_devicekey_his
+		<trim prefix="SET" suffixOverrides=",">
+			<if test="status != null ">status = #{status},</if>
+			<if test="version != null  and version != ''">version = #{version},</if>
+			<if test="createdate != null ">createdate = #{createdate},</if>
+			<if test="checkcode != null  and checkcode != ''">checkcode = #{checkcode},</if>
+			<if test="sysname != null  and sysname != ''">sysname = #{sysname},</if>
+			<if test="keyname != null  and keyname != ''">keyname = #{keyname},</if>
+			<if test="serverid != null  and serverid != ''">serverid = #{serverid},</if>
+
+		</trim>
+		where id = #{id}
+	</update>
+
+	<delete id="deleteTDevicekeyHisById" parameterType="Long">
+		delete from
+		t_devicekey_his where id = #{id}
+	</delete>
+
+	<delete id="deleteTDevicekeyHisByIds" parameterType="String">
+		delete from t_devicekey_his where id in
+		<foreach item="id" collection="array" open="(" separator=","
+			close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+	<select id="selectTDevicekeyHisByKeyName" parameterType="String"
+		resultMap="TDevicekeyResult">
+		<include refid="selectTDevicekeyHisVo" />
+		where keyname = #{keyname} order by version desc 
+	</select>
+
+	<select id="selectMaxVersion" resultType="java.lang.Integer" parameterType="String">
+		select ifnull(max(cc.version),0)  from (select * from t_devicekey_his  union all	select * from t_devicekey ) cc
+		where cc.keyname=#{keyname}
+	</select>
+</mapper>
